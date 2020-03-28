@@ -14,13 +14,8 @@ using CleanArchitectureDemo.Api.Common.Filters;
 namespace CleanArchitectureDemo.Api.Controllers
 {
     [Route("api/roles")]
-    public class RolesController : ControllerBase
+    public class RolesController : BaseController
     {
-        private readonly IMediator _mediator;
-        public RolesController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
         [HttpPost]
         [Action("Create role", "Create new role")]
         public async Task<ResponseActionResult<RoleModel>> CreateRole([FromBody]CreateRoleCommand createRoleCommand)

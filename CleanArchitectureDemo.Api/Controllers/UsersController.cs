@@ -13,13 +13,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace CleanArchitectureDemo.Api.Controllers
 {
     [Route("api/users")]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseController
     {
-        private readonly IMediator _mediator;
-        public UsersController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        //private readonly IMediator _mediator;
+        //public UsersController(IMediator mediator)
+        //{
+        //    _mediator = mediator;
+        //}
         [HttpPost]
         [Action("Create user", "Create new user")]
         public async Task<ResponseActionResult<UserModel>> CreateUser([FromBody] CreateUserCommand createUserCommand)
