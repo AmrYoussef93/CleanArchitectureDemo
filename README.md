@@ -5,9 +5,11 @@ i'm building web api application using .net core 3.1 ,  i'm using
  Clean architecture making  our project lossely coupled  .
  # Clean Architecture Layers
  1- Api layer => holds all Web api controllers , Custom authorization filter , validation filter to handle requests validation.
- this layer referance "infrastructure layer"
+ this layer referance "infrastructure layer".
+ 
  2- Core layer => Maps to the layers that hold the Use Case and Entity concerns and is also where our External Interfaces get defined. These innermost layers contain our domain objects and business rules.
- 3- Infrastructure layer => layer contain our context , repository , and our third party ,this layer contains the physical implementation of the interfaces defined in our domain layer ,  and reference the core layer.
+ 
+ 3- Infrastructure layer => layer contain our context , repository , and our third party ,this layer contains the physical implementation    of the interfaces defined in our domain layer ,  and reference the core layer.
  
  # CQRS with MediatR
  in my application i'm using cqrs with mediatR to send request  from api layer to core layer using "mediator.send()"
