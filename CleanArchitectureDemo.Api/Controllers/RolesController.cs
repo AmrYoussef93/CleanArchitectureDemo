@@ -10,6 +10,7 @@ using CleanArchitectureDemo.Application.Role.Models;
 using CleanArchitectureDemo.Application.Role.Commands;
 using CleanArchitectureDemo.Common.Attributes;
 using CleanArchitectureDemo.Api.Common.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CleanArchitectureDemo.Api.Controllers
 {
@@ -17,6 +18,7 @@ namespace CleanArchitectureDemo.Api.Controllers
     public class RolesController : BaseController
     {
         [HttpPost]
+        [Authorize(Policy = "Authorizer")]
         [Action("Create role", "Create new role")]
         public async Task<ResponseActionResult<RoleModel>> CreateRole([FromBody]CreateRoleCommand createRoleCommand)
         {

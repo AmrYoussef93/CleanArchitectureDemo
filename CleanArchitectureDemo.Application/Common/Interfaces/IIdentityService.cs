@@ -11,11 +11,12 @@ namespace CleanArchitectureDemo.Application.Common.Interfaces
 {
     public interface IIdentityService
     {
-        // will  take  user dto from  application
         Task<Result<UserModel>> CreateUserAsync(UserModel userModel);
         Task<Result<RoleModel>> CreateRoleAsync(RoleModel roleModel);
         Task<bool> UserExisted(string emil);
         Task CreateActionsAsync(IEnumerable<ActionModel> actions);
         Task<bool> RoleExsited(string role);
+        Task<Result<string>> Login(LoginModel loginModel);
+        Task<bool> IsUserAuthorized(AuthorizationModel authorizationModel);
     }
 }

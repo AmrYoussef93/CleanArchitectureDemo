@@ -2,6 +2,7 @@
 using CleanArchitectureDemo.Infrastructure.Identity;
 using CleanArchitectureDemo.Infrastructure.Identity.Context;
 using CleanArchitectureDemo.Infrastructure.Identity.Entities;
+using CleanArchitectureDemo.Infrastructure.Identity.Handler;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -41,7 +42,7 @@ namespace CleanArchitectureDemo.Infrastructure
             });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IIdentityService, IdentityService>();
-
+            services.Configure<IdentitySetting>(configuration.GetSection("IdentitySetting"));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                .AddJwtBearer(options =>
                {
@@ -49,7 +50,7 @@ namespace CleanArchitectureDemo.Infrastructure
                    {
                        ValidateIssuerSigningKey = true,
                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII
-                           .GetBytes(configuration.GetSection("Identity").GetValue<string>("JWT_Token"))),
+                           .GetBytes(configuration.GetSection("IdentitySetting").GetValue<string>("SigningKey"))),
                        ValidateIssuer = false,
                        ValidateAudience = false
                    };

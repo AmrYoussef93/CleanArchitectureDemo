@@ -21,15 +21,17 @@ namespace CleanArchitectureDemo.Api.Common.Filters
         {
             _identityService = identityService;
         }
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AuthorizationFilter requirement)
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, AuthorizationFilter requirement)
         {
             var mvcContext = context.Resource as AuthorizationFilterContext;
             var descriptor = mvcContext?.ActionDescriptor as ControllerActionDescriptor;
             var actionName = descriptor.ActionName;
             var controllerName = descriptor.ControllerName;
             var userId = context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var authorizationModel = new AuthorizationModel(int.Parse(userId),controllerName,actionName);
-            throw new NotImplementedException();
+            if (await _identityService.IsUserAuthorized(new AuthorizationModel(userId, controllerName, actionName)))
+            {
+                context.Succeed(requirement);
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using FluentValidation.AspNetCore;
 using CleanArchitectureDemo.Api.Common.Filters;
 using CleanArchitectureDemo.Api.Common.Middlewares;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CleanArchitectureDemo.Api
 {
@@ -37,17 +38,19 @@ namespace CleanArchitectureDemo.Api
             services.AddInfrastructure(Configuration);
             services.AddApplication(Configuration);
             services.AddPersistence(Configuration);
+            services.AddTransient<IAuthorizationHandler, AuthorizerHandler>();
+            services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("Authorizer", policy => policy.AddRequirements(new AuthorizationFilter()));
+            });
             services.AddMvc(config =>
             {
                 config.EnableEndpointRouting = false;
                 config.Filters.Add<ValidationFilter>();
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
             .AddFluentValidation(confg => confg.RegisterValidatorsFromAssemblyContaining<Startup>());
-            
-            services.AddAuthorization(opt =>
-            {
-                opt.AddPolicy("Authorizer", policy => policy.AddRequirements(new AuthorizationFilter()));
-            });
+
+
 
             services.AddSwaggerGen(c =>
             {
@@ -64,14 +67,15 @@ namespace CleanArchitectureDemo.Api
                 app.UseDeveloperExceptionPage();
             }
             app.UseCors();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("../swagger/v1/swagger.json", "Clean Architecture");
             });
             app.UseCustomExceptionHandler();
-            app.UseAuthentication();
-            app.UseAuthorization();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
