@@ -44,7 +44,7 @@ namespace CleanArchitectureDemo.Infrastructure
             services.AddScoped<IIdentityService, IdentityService>();
             services.Configure<IdentitySetting>(configuration.GetSection("IdentitySetting"));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-               .AddJwtBearer(options =>
+                .AddJwtBearer(options =>
                {
                    options.TokenValidationParameters = new TokenValidationParameters
                    {

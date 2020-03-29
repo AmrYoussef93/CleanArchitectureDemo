@@ -13,6 +13,7 @@ using FluentValidation.AspNetCore;
 using CleanArchitectureDemo.Api.Common.Filters;
 using CleanArchitectureDemo.Api.Common.Middlewares;
 using Microsoft.AspNetCore.Authorization;
+using CleanArchitectureDemo.Api.Common.ApiInstallations;
 
 namespace CleanArchitectureDemo.Api
 {
@@ -38,25 +39,7 @@ namespace CleanArchitectureDemo.Api
             services.AddInfrastructure(Configuration);
             services.AddApplication(Configuration);
             services.AddPersistence(Configuration);
-            services.AddTransient<IAuthorizationHandler, AuthorizerHandler>();
-            services.AddAuthorization(opt =>
-            {
-                opt.AddPolicy("Authorizer", policy => policy.AddRequirements(new AuthorizationFilter()));
-            });
-            services.AddMvc(config =>
-            {
-                config.EnableEndpointRouting = false;
-                config.Filters.Add<ValidationFilter>();
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-            .AddFluentValidation(confg => confg.RegisterValidatorsFromAssemblyContaining<Startup>());
-
-
-
-            services.AddSwaggerGen(c =>
-            {
-                c.ResolveConflictingActions(x => x.First());
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Clean Architecture" });
-            });
+            services.AddApi(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
