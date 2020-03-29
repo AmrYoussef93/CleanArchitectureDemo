@@ -1,4 +1,6 @@
 ﻿using CleanArchitectureDemo.Application.Common.Interfaces;
+using CleanArchitectureDemo.Infrastructure.Email;
+using CleanArchitectureDemo.Infrastructure.Email.Models;
 using CleanArchitectureDemo.Infrastructure.Identity;
 using CleanArchitectureDemo.Infrastructure.Identity.Context;
 using CleanArchitectureDemo.Infrastructure.Identity.Entities;
@@ -56,7 +58,8 @@ namespace CleanArchitectureDemo.Infrastructure
                    };
                });
             #endregion
-
+            services.Configure<EmailConfiguration>(configuration.GetSection("EmailConfiguration"));
+            services.AddScoped<IEmailService, EmailService>();
             return services;
         }
     }

@@ -27,14 +27,17 @@ namespace CleanArchitectureDemo.Infrastructure.Identity
         private readonly RoleManager<Role> _roleManager;
         private readonly NorthwindIdentityContext _identityContext;
         private readonly IdentitySetting _identitySetting;
+        private readonly IEmailService _emailService;
         public IdentityService(UserManager<User> userManager, SignInManager<User> signInManager,
-            RoleManager<Role> roleManager, NorthwindIdentityContext identityContext, IOptions<IdentitySetting> identitySetting)
+            RoleManager<Role> roleManager, NorthwindIdentityContext identityContext,
+            IOptions<IdentitySetting> identitySetting, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _identityContext = identityContext;
             _identitySetting = identitySetting.Value;
+            _emailService = emailService;
         }
         public async Task<Result<RoleModel>> CreateRoleAsync(RoleModel roleModel)
         {
@@ -64,7 +67,8 @@ namespace CleanArchitectureDemo.Infrastructure.Identity
                 PhoneNumber = userModel.PhoneNumber,
                 LockoutEnabled = false
             };
-            var result = await _userManager.CreateAsync(identityUser, userModel.Password);
+            // send email to user contain confirmation code , and temp password
+            var result = await _userManager.CreateAsync(identityUser);
             if (result.Succeeded)
             {
                 userModel.Id = identityUser.Id;
@@ -148,7 +152,7 @@ namespace CleanArchitectureDemo.Infrastructure.Identity
             var user = await _userManager.FindByIdAsync(authorizationModel.UserId);
             if (user == null)
                 return false;
-            var userRoles =await _userManager.GetRolesAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
             if (userRoles.Contains(SystemRole.SystemAdmin))
                 return true;
             foreach (var userRole in userRoles)
@@ -163,6 +167,33 @@ namespace CleanArchitectureDemo.Infrastructure.Identity
                 }
             }
             return false;
+        }
+
+        public async Task<Result<RegisterUserResponse>> RegisterUserAsync(UserModel userModel)
+        {
+            var identityUser = new User()
+            {
+                UserName = userModel.Email,
+                Email = userModel.Email,
+                FirstName = userModel.FirstName,
+                LastName = userModel.LastName,
+                PhoneNumber = userModel.PhoneNumber,
+                LockoutEnabled = false
+            };
+            var result = await _userManager.CreateAsync(identityUser, userModel.Password);
+            if (result.Succeeded)
+            {
+                userModel.Id = identityUser.Id;
+                result = await _userManager.AddToRoleAsync(identityUser, SystemRole.User);
+                if (!result.Succeeded)
+                    return Result<RegisterUserResponse>.BadRequest(result.Errors.Select(e => e.Description).ToArray());
+                await _emailService.SendRegistrationEmailAsyn($"{userModel.FirstName} {userModel.LastName}", userModel.Email, "ASW123");
+                return Result<RegisterUserResponse>.Created(new RegisterUserResponse() { Id = identityUser.Id, Email = userModel.Email });
+            }
+            else
+            {
+                return Result<RegisterUserResponse>.BadRequest(result.Errors.Select(e => e.Description).ToArray());
+            }
         }
     }
 }

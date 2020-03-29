@@ -1,4 +1,5 @@
 ﻿using CleanArchitectureDemo.Api.Common.Filters;
+using CleanArchitectureDemo.Api.Handler;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,7 @@ namespace CleanArchitectureDemo.Api.Common.ApiInstallations
             services.AddTransient<IAuthorizationHandler, AuthorizerHandler>();
             services.AddAuthorization(opt =>
             {
-                opt.AddPolicy("Authorizer", policy => policy.AddRequirements(new AuthorizationFilter()));
+                opt.AddPolicy(SystemAuthorizer.Authorizer, policy => policy.AddRequirements(new AuthorizationFilter()));
             });
             services.AddMvc(config =>
             {
@@ -29,7 +30,6 @@ namespace CleanArchitectureDemo.Api.Common.ApiInstallations
             .AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddSwaggerGen(config =>
             {
-                config.ResolveConflictingActions(x => x.First());
                 config.SwaggerDoc("v1", new OpenApiInfo { Title = "Clean Architecture" });
                 var openApiSecurityScheme = new OpenApiSecurityScheme
                 {

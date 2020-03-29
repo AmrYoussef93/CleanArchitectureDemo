@@ -18,7 +18,7 @@ namespace CleanArchitectureDemo.Api.Controllers
     public class RolesController : BaseController
     {
         [HttpPost]
-        [Authorize(Policy = "Authorizer")]
+        [Authorize(Policy = SystemAuthorizer.Authorizer)]
         [Action("Create role", "Create new role")]
         public async Task<ResponseActionResult<RoleModel>> CreateRole([FromBody]CreateRoleCommand createRoleCommand)
         {

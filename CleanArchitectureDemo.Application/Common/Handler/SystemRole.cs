@@ -7,5 +7,6 @@ namespace CleanArchitectureDemo.Application.Common.Handler
     public static class SystemRole
     {
         public const string SystemAdmin = "SystemAdmin";
+        public const string User = "User";
     }
 }

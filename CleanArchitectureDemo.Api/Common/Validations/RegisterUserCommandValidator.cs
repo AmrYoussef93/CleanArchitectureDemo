@@ -1,16 +1,16 @@
-﻿using CleanArchitectureDemo.Application.User.Commands.CreateUser;
-using FluentValidation;
-using FluentValidation.Validators;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CleanArchitectureDemo.Application.User.Commands.RegisterUser;
+using FluentValidation;
+using FluentValidation.Validators;
 
 namespace CleanArchitectureDemo.Api.Common.Validations
 {
-    public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
+    public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
     {
-        public CreateUserCommandValidator()
+        public RegisterUserCommandValidator()
         {
             RuleFor(x => x.Email)
                 .NotEmpty()
@@ -21,9 +21,9 @@ namespace CleanArchitectureDemo.Api.Common.Validations
                 .NotEmpty();
             RuleFor(x => x.PhoneNumber)
                 .NotEmpty();
-            RuleFor(x => x.PhoneNumber)
-                .NotEmpty();
-
+            RuleFor(x => x.Password)
+               .NotEmpty();
+            
         }
     }
 }

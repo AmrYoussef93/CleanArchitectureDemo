@@ -65,6 +65,7 @@ namespace CleanArchitectureDemo.Api
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
             });
+            app.UseStaticFiles();
         }
     }
 }
