@@ -4,9 +4,7 @@ pipeline {
     stage("build") {
       steps {
         echo 'retoring packages'
-        sh 'dotnet restore'
         echo 'build app'
-        sh 'dotnet build --not-restore'
       }
     }
     
